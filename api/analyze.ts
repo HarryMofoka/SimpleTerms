@@ -84,7 +84,7 @@ export default async function handler(
     }
 
     const report = await analyzeContract(text);
-    return res.status(200).json(report);
+    return res.status(200).json({ report, contractText: text });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
     console.error("Analysis error:", message);

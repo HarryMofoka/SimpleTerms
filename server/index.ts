@@ -5,6 +5,7 @@ import multer from "multer";
 import { extname } from "path";
 import { extractText } from "./extractText.js";
 import { analyzeContract } from "./analyzeContract.js";
+import { chatWithContract } from "./chatWithContract.js";
 
 const PORT = Number(process.env.PORT ?? 3001);
 const MAX_MB = Number(process.env.MAX_UPLOAD_MB ?? 10);
@@ -46,11 +47,31 @@ app.post("/api/analyze", upload.single("contract"), async (req, res) => {
     }
 
     const report = await analyzeContract(text);
-    res.json(report);
+    res.json({ report, contractText: text });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : String(err);
     console.error("Analysis error:", message);
     res.status(500).json({ error: "Analysis failed. Please try again." });
+  }
+});
+
+// JSON body parser for chat endpoint
+app.use(express.json());
+
+app.post("/api/chat", async (req, res) => {
+  const { contractText, history, newMessage } = req.body;
+  if (!contractText || typeof newMessage !== "string") {
+    res.status(400).json({ error: "Missing contractText or newMessage." });
+    return;
+  }
+
+  try {
+    const reply = await chatWithContract(contractText, history || [], newMessage);
+    res.json({ reply });
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : String(err);
+    console.error("Chat error:", message);
+    res.status(500).json({ error: "Failed to generate reply. Please try again." });
   }
 });
 

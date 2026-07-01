@@ -21,7 +21,11 @@ const stageProgress: Record<UploadStage, number> = {
 };
 
 type Props = {
-  onAnalysisComplete: (report: AnalysisReport) => void;
+  onAnalysisComplete: (result: {
+    report: AnalysisReport;
+    contractText: string;
+    contractName: string;
+  }) => void;
 };
 
 export function UploadPanel({ onAnalysisComplete }: Props) {
@@ -75,11 +79,12 @@ export function UploadPanel({ onAnalysisComplete }: Props) {
         );
       }
 
-      const report: AnalysisReport = await response.json();
+      const { report, contractText }: { report: AnalysisReport; contractText: string } =
+        await response.json();
 
       setStage("ready");
       setMessage("Your contract analysis is ready. Scroll down to review the report.");
-      onAnalysisComplete(report);
+      onAnalysisComplete({ report, contractText, contractName: file.name });
     } catch (err: unknown) {
       const errorMessage =
         err instanceof Error ? err.message : "An unexpected error occurred.";

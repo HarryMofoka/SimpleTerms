@@ -4,6 +4,7 @@ import { SiteHeader } from "./components/SiteHeader";
 import { demoReport } from "./data/demoReport";
 import { AnalysisReportView } from "./features/report/AnalysisReportView";
 import { UploadPanel } from "./features/upload/UploadPanel";
+import { ContractChat } from "./features/chat/ContractChat";
 import type { AnalysisReport } from "./types/report";
 
 const processSteps = [
@@ -34,6 +35,9 @@ const trustItems = [
 
 function App() {
   const [report, setReport] = useState<AnalysisReport | null>(null);
+  const [contractText, setContractText] = useState<string>("");
+  const [contractName, setContractName] = useState<string>("");
+
   const activeReport = report ?? demoReport;
   const isLiveReport = report !== null;
 
@@ -69,7 +73,13 @@ function App() {
           </div>
         </section>
 
-        <UploadPanel onAnalysisComplete={setReport} />
+        <UploadPanel
+          onAnalysisComplete={({ report, contractText, contractName }) => {
+            setReport(report);
+            setContractText(contractText);
+            setContractName(contractName);
+          }}
+        />
 
         <section id="how-it-works" className="process-section" aria-labelledby="process-title">
           <div className="section-heading">
@@ -88,6 +98,10 @@ function App() {
         </section>
 
         <AnalysisReportView report={activeReport} isLive={isLiveReport} />
+
+        {isLiveReport ? (
+          <ContractChat contractText={contractText} contractName={contractName} />
+        ) : null}
 
         <section id="security" className="security-section" aria-labelledby="security-title">
           <div>
