@@ -1,8 +1,10 @@
+import { useState } from "react";
 import { Footer } from "./components/Footer";
 import { SiteHeader } from "./components/SiteHeader";
 import { demoReport } from "./data/demoReport";
 import { AnalysisReportView } from "./features/report/AnalysisReportView";
 import { UploadPanel } from "./features/upload/UploadPanel";
+import type { AnalysisReport } from "./types/report";
 
 const processSteps = [
   {
@@ -31,6 +33,10 @@ const trustItems = [
 ];
 
 function App() {
+  const [report, setReport] = useState<AnalysisReport | null>(null);
+  const activeReport = report ?? demoReport;
+  const isLiveReport = report !== null;
+
   return (
     <div id="top" className="app">
       <SiteHeader />
@@ -63,7 +69,7 @@ function App() {
           </div>
         </section>
 
-        <UploadPanel />
+        <UploadPanel onAnalysisComplete={setReport} />
 
         <section id="how-it-works" className="process-section" aria-labelledby="process-title">
           <div className="section-heading">
@@ -81,7 +87,7 @@ function App() {
           </div>
         </section>
 
-        <AnalysisReportView report={demoReport} />
+        <AnalysisReportView report={activeReport} isLive={isLiveReport} />
 
         <section id="security" className="security-section" aria-labelledby="security-title">
           <div>
@@ -105,7 +111,7 @@ function App() {
             </article>
             <article>
               <h3>Delete quickly</h3>
-              <p>Uploaded documents should be temporary, private, and removed after processing.</p>
+              <p>Uploaded documents are temporary, private, and removed immediately after processing.</p>
             </article>
             <article>
               <h3>Render safely</h3>

@@ -315,6 +315,11 @@ p {
   background-color: #eef7f4;
 }
 
+.dropzone.processing {
+  pointer-events: none;
+  opacity: 0.7;
+}
+
 .dropzone input {
   position: absolute;
   width: 1px;
@@ -365,7 +370,7 @@ p {
   height: 100%;
   border-radius: inherit;
   background: linear-gradient(90deg, #315f91, #24735c);
-  transition: width 280ms ease;
+  transition: width 400ms ease;
 }
 
 .security-list {
@@ -406,6 +411,29 @@ p {
   gap: 18px;
   margin-top: 28px;
   padding: 18px;
+  position: relative;
+}
+
+.report-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+}
+
+.report-badge.demo {
+  background: #e8edf4;
+  color: var(--blue);
+}
+
+.report-badge.live {
+  background: #dff0e8;
+  color: var(--green);
 }
 
 .report-summary {
@@ -531,6 +559,35 @@ p {
 .footer p {
   max-width: 620px;
   margin-bottom: 0;
+}
+
+.reset-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 42px;
+  padding: 0 18px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: #fff;
+  color: var(--ink);
+  font-weight: 700;
+  cursor: pointer;
+  transition: background-color 180ms ease, border-color 180ms ease;
+}
+
+.reset-button:hover {
+  background-color: var(--soft);
+  border-color: var(--blue);
+}
+
+.progress-track.animated span {
+  animation: progress-pulse 2s ease-in-out infinite;
+}
+
+@keyframes progress-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.55; }
 }
 
 @media (prefers-reduced-motion: reduce) {
