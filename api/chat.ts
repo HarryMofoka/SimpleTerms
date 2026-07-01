@@ -1,4 +1,18 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
+
+// Polyfill Promise.withResolvers for Node runtimes < v22 (e.g. Vercel Node 18/20)
+if (typeof (Promise as any).withResolvers === "undefined") {
+  (Promise as any).withResolvers = function () {
+    let resolve: any;
+    let reject: any;
+    const promise = new Promise((res, rej) => {
+      resolve = res;
+      reject = rej;
+    });
+    return { promise, resolve, reject };
+  };
+}
+
 import { chatWithContract } from "../server/chatWithContract.js";
 
 export default async function handler(

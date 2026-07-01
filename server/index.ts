@@ -9,6 +9,19 @@ import { extractText } from "./extractText.js";
 import { analyzeContract } from "./analyzeContract.js";
 import { chatWithContract } from "./chatWithContract.js";
 
+// Polyfill Promise.withResolvers for Node runtimes < v22 (e.g. Vercel Node 18/20)
+if (typeof (Promise as any).withResolvers === "undefined") {
+  (Promise as any).withResolvers = function () {
+    let resolve: any;
+    let reject: any;
+    const promise = new Promise((res, rej) => {
+      resolve = res;
+      reject = rej;
+    });
+    return { promise, resolve, reject };
+  };
+}
+
 const PORT = Number(process.env.PORT ?? 3001);
 const MAX_MB = Number(process.env.MAX_UPLOAD_MB ?? 10);
 const ALLOWED_EXTENSIONS = new Set([".pdf", ".docx"]);
