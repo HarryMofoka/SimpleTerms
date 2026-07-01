@@ -2,7 +2,6 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import multer from "multer";
-import { existsSync, unlinkSync } from "fs";
 import { extname } from "path";
 import { extractText } from "./extractText.js";
 import { analyzeContract } from "./analyzeContract.js";
@@ -12,7 +11,7 @@ const MAX_MB = Number(process.env.MAX_UPLOAD_MB ?? 10);
 const ALLOWED_EXTENSIONS = new Set([".pdf", ".docx"]);
 
 const upload = multer({
-  dest: "uploads/",
+  storage: multer.memoryStorage(),
   limits: { fileSize: MAX_MB * 1024 * 1024 },
   fileFilter(_req, file, cb) {
     const ext = extname(file.originalname).toLowerCase();
@@ -36,7 +35,7 @@ app.post("/api/analyze", upload.single("contract"), async (req, res) => {
 
   try {
     const ext = extname(file.originalname).toLowerCase();
-    const text = await extractText(file.path, ext);
+    const text = await extractText(file.buffer, ext);
 
     if (!text.trim()) {
       res.status(422).json({
@@ -52,13 +51,6 @@ app.post("/api/analyze", upload.single("contract"), async (req, res) => {
     const message = err instanceof Error ? err.message : String(err);
     console.error("Analysis error:", message);
     res.status(500).json({ error: "Analysis failed. Please try again." });
-  } finally {
-    // Always delete the temporary uploaded file
-    try {
-      if (existsSync(file.path)) unlinkSync(file.path);
-    } catch {
-      // Ignore cleanup errors
-    }
   }
 });
 
