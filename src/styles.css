@@ -603,15 +603,18 @@ p {
 
 @media (max-width: 900px) {
   .site-header {
-    align-items: stretch;
     flex-wrap: wrap;
+    gap: 12px;
+    padding: 10px 14px;
   }
 
   .nav-links {
     order: 3;
     width: 100%;
+    justify-content: space-around;
+    border-top: 1px solid var(--line);
+    padding-top: 8px;
     overflow-x: auto;
-    padding-bottom: 2px;
   }
 
   .hero,
@@ -625,8 +628,24 @@ p {
     padding-top: 44px;
   }
 
+  .hero-copy {
+    text-align: center;
+    justify-items: center;
+  }
+
+  .hero-copy > p:not(.eyebrow) {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-actions,
+  .trust-strip {
+    justify-content: center;
+  }
+
   .hero-media {
     max-width: 680px;
+    margin: 0 auto;
   }
 
   .process-grid,
@@ -649,7 +668,9 @@ p {
   }
 
   .header-action {
-    width: 100%;
+    font-size: 0.88rem;
+    padding: 0 12px;
+    min-height: 36px;
   }
 
   .hero-actions,
@@ -664,7 +685,11 @@ p {
   }
 
   h1 {
-    font-size: clamp(3rem, 18vw, 4.6rem);
+    font-size: clamp(2.4rem, 12vw, 4rem);
+  }
+
+  h2 {
+    font-size: clamp(1.8rem, 8vw, 2.8rem);
   }
 
   .process-grid,
@@ -673,12 +698,16 @@ p {
     grid-template-columns: 1fr;
   }
 
-  .report-summary,
-  .clause-heading {
+  .report-summary {
     grid-template-columns: 1fr;
   }
 
+  .report-summary .risk-badge {
+    justify-self: start;
+  }
+
   .clause-heading {
+    grid-template-columns: 1fr;
     align-items: flex-start;
   }
 
@@ -868,8 +897,20 @@ p {
 @media (max-width: 620px) {
   .chat-section {
     width: min(100% - 24px, 1180px);
+    margin-top: 44px;
   }
   .chat-container {
     padding: 16px;
+  }
+  .chat-message-bubble {
+    max-width: 95%;
+  }
+  .chat-input-bar {
+    gap: 8px;
+  }
+  .chat-input-bar button {
+    min-width: 70px;
+    padding: 0 12px;
+    font-size: 0.88rem;
   }
 }
