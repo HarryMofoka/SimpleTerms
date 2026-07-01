@@ -1,10 +1,5 @@
-import { createRequire } from "module";
 import mammoth from "mammoth";
-
-const require = createRequire(import.meta.url);
-const pdfParse = require("pdf-parse") as (
-  buffer: Buffer
-) => Promise<{ text: string; numpages: number }>;
+import { extractText as extractPdfText, getDocumentProxy } from "unpdf";
 
 /**
  * Extract plain text from a PDF or DOCX buffer.
@@ -19,7 +14,8 @@ export async function extractText(
   ext: string
 ): Promise<string> {
   if (ext === ".pdf") {
-    const result = await pdfParse(buffer);
+    const pdf = await getDocumentProxy(new Uint8Array(buffer));
+    const result = await extractPdfText(pdf, { mergePages: true });
     return result.text;
   }
 
