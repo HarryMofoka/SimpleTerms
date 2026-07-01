@@ -2,6 +2,8 @@ import "dotenv/config";
 import express from "express";
 import cors from "cors";
 import multer from "multer";
+import helmet from "helmet";
+import { rateLimit } from "express-rate-limit";
 import { extname } from "path";
 import { extractText } from "./extractText.js";
 import { analyzeContract } from "./analyzeContract.js";
@@ -25,7 +27,38 @@ const upload = multer({
 });
 
 const app = express();
+
+// Secure Express headers with Helmet
+app.use(
+  helmet({
+    contentSecurityPolicy: {
+      directives: {
+        defaultSrc: ["'self'"],
+        styleSrc: ["'self'", "'unsafe-inline'"],
+        imgSrc: ["'self'", "data:"],
+        connectSrc: ["'self'"],
+        objectSrc: ["'none'"],
+        upgradeInsecureRequests: []
+      }
+    }
+  })
+);
+
 app.use(cors());
+
+// Configure Rate Limiter: Max 20 requests per 15 minutes per IP
+const apiLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+  message: {
+    error: "Too many requests from this IP. Please try again after 15 minutes."
+  }
+});
+
+// Apply rate limiter to all API endpoints
+app.use("/api/", apiLimiter);
 
 app.post("/api/analyze", upload.single("contract"), async (req, res) => {
   const file = req.file;
